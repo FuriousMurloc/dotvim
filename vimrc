@@ -72,4 +72,12 @@ autocmd FileType tex inoremap <up> 		<C-o>g<up>
 "template
 "autocmd FileType c noremap <leader>f yiw:grep -r @0 ./*
 
-autocmd FileType c noremap <leader>f yiw:grep -r @0 --include={c,h,S} ./*
+"fun! Busca(arg)
+""	grep -r a:arg **/*
+"endfunction
+
+"command! -nargs=1 Busca call Busca('<args>')
+"
+"total que me cannsat i la comanda es com al grep normal aixi que ale!
+"
+autocmd FileType c noremap <leader>f "fyiw:grep -R <C-r>f **/*.[cSh]<CR>:cw<CR>
