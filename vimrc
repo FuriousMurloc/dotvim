@@ -26,8 +26,8 @@ let g:gruvbox_contrast_dark='hard'
 
 set number
 set relativenumber
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set nocompatible
 set guifont=Monospace\ 12
 set wrap
