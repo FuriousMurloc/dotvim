@@ -10,3 +10,6 @@
 [submodule "bundle/delimitMate"]
 	path = bundle/delimitMate
 	url = git@github.com:Raimondi/delimitMate.git
+[submodule "bundle/vim-erlang-compiler"]
+	path = bundle/vim-erlang-compiler
+	url = https://github.com/vim-erlang/vim-erlang-compiler.git

@@ -3,6 +3,10 @@ execute pathogen#infect()
 syntax on
 filetype plugin indent on
 
+set nocompatible
+set path+=**
+set wildmenu
+set laststatus=2
 " ########################
 "	coses globals
 " ########################
@@ -26,8 +30,8 @@ let g:gruvbox_contrast_dark='hard'
 
 set number
 set relativenumber
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set nocompatible
 set guifont=Monospace\ 12
 set wrap
@@ -81,3 +85,9 @@ autocmd FileType tex inoremap <up> 		<C-o>g<up>
 "total que me cannsat i la comanda es com al grep normal aixi que ale!
 "
 autocmd FileType c noremap <leader>f "fyiw:grep -R <C-r>f **/*.[cSh]<CR>:cw<CR>
+
+
+" ########################
+"	TAGS
+" ########################
+command! Maketags !ctags -R .
