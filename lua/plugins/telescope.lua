@@ -23,6 +23,9 @@ return 	{
       {
         "<leader>jl", function() require('telescope.builtin').jumplist() end,
       },
+      {
+        "<leader>gr", function() require('telescope.builtin').lsp_references() end,
+      },
     },
   }
 }
