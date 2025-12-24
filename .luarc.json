@@ -7,5 +7,5 @@
     "diagnostics.globals": ["vim",
         "catpuccin"],
     "workspace.checkThirdParty": false,
-    "workspace.library":[ "$VIMRUNTIME" ]
+    "workspace.library":[ "$VIMRUNTIME" , "/home/aleix/.local/share/nvim/"]
 }
