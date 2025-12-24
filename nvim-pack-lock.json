@@ -1,0 +1,28 @@
+{
+  "plugins": {
+    "floaterminal": {
+      "rev": "581fe56",
+      "src": "/home/aleix/repos/floaterminal"
+    },
+    "mini.files": {
+      "rev": "dce9a4e",
+      "src": "https://github.com/echasnovski/mini.files"
+    },
+    "mini.pick": {
+      "rev": "08a7220",
+      "src": "https://github.com/echasnovski/mini.pick"
+    },
+    "nvim": {
+      "rev": "234fc04",
+      "src": "https://github.com/catppuccin/nvim.git"
+    },
+    "nvim-lspconfig": {
+      "rev": "2010fc6",
+      "src": "https://github.com/neovim/nvim-lspconfig.git"
+    },
+    "zk-nvim": {
+      "rev": "12ea07f",
+      "src": "https://github.com/zk-org/zk-nvim"
+    }
+  }
+}

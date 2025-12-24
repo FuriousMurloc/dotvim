@@ -32,7 +32,6 @@ vim.keymap.set('t', '<esc>', '<c-\\><c-n>', { desc = 'esc in terinal mode.' })
 
 vim.pack.add({
     { src = 'https://github.com/catppuccin/nvim.git' },
-    { src = 'https://github.com/neovim/nvim-lspconfig.git' },
     { src = 'https://github.com/echasnovski/mini.pick' },
     { src = 'https://github.com/echasnovski/mini.files' },
     { src = 'https://github.com/zk-org/zk-nvim' },
@@ -40,7 +39,6 @@ vim.pack.add({
 })
 Mini_pick = require('mini.pick')
 Mini_files = require('mini.files')
-Lsp_config = require('lspconfig')
 Floaterminal = require('floaterminal')
 Catppuccin = require("catppuccin")
 Zk = require("zk")
@@ -73,15 +71,14 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('i', '<C-space>', vim.lsp.completion.get, { desc = 'trigger autocompletion' })
 end
 
-Lsp_config['lua_ls'].setup({ on_attach = on_attach })
+vim.lsp.config('lua_ls',{ on_attach = on_attach })
 
-Lsp_config['clangd'].setup({
+vim.lsp.config('clangd',{
     cmd = { 'clangd', '--background-index', '--clang-tidy' },
     on_attach = on_attach
 })
 
-Lsp_config['zls'].setup
-{
+vim.lsp.config('zls', {
     -- Server-specific settings. See `:help lspconfig-setup`
 
     -- There are two ways to set config options:
@@ -104,7 +101,7 @@ Lsp_config['zls'].setup
 
         }
     }
-}
+})
 
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format, { desc = 'vim.lsp.buf.format()' })
 
