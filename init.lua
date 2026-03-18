@@ -1,5 +1,7 @@
 vim.g.mapleader = ' '
 
+Lsp = require('lsp')
+
 -- Tabs stuff
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -28,6 +30,7 @@ vim.keymap.set({'n','i'}, '<C-h>', ':tabprevious<CR>')
 vim.keymap.set({'n','i'}, '<C-l>', ':tabnext<CR>')
 -- reload this file
 vim.keymap.set('n', '<leader>+', ':update<CR> :source<CR>')
+
 vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, { desc = 'vim.lsp.buf.definition' })
 vim.keymap.set('n', '<leader>fo', vim.lsp.buf.format, { desc = 'vim.lsp.buf.format' })
 -- exit terminal with esc
@@ -35,22 +38,29 @@ vim.keymap.set('t', '<esc>', '<c-\\><c-n>', { desc = 'esc in terinal mode.' })
 
 vim.pack.add({
     { src = 'https://github.com/catppuccin/nvim.git' },
+    { src = 'https://github.com/pianocomposer321/project-templates.nvim' },
     { src = 'https://github.com/nvim-neo-tree/neo-tree.nvim', version = vim.version.range('3') },
     { src = 'https://github.com/MunifTanjim/nui.nvim.git' },
     { src = 'https://github.com/nvim-lua/plenary.nvim.git' },
     { src = 'https://github.com/nvim-tree/nvim-web-devicons' },
     { src = 'https://github.com/nvim-telescope/telescope.nvim.git' },
     { src = 'https://github.com/NeogitOrg/neogit.git' },
+    { src = 'https://github.com/nvim-treesitter/nvim-treesitter' },
     { src = 'https://github.com/sindrets/diffview.nvim.git' },
+    { src = 'https://github.com/ThePrimeagen/harpoon' , version='harpoon2' },
 })
 
-Tree = require('neo-tree')
-Picker = require('telescope.builtin')
-Catppuccin = require("catppuccin")
-Git = require('neogit')
+local tree = require('neo-tree')
+local picker = require('telescope.builtin')
+local catppuccin = require("catppuccin")
+local git = require('neogit')
+local harpoon = require("harpoon")
+local treesitter = require('nvim-treesitter.config')
 
+vim.cmd.colorscheme("catppuccin")
 
-Tree.setup({
+--file tree 
+tree.setup({
     enable_git_status = true,
     enable_diagnostics = true,
     event_handlers = {
@@ -79,60 +89,18 @@ Tree.setup({
     },
   }
 })
--- lsp stuff
 
-local on_attach = function(client, bufnr)
-    vim.lsp.completion.enable(true, client.id, bufnr, {
-        autotrigger = true,
-        convert = function(item)
-            return { abbr = item.label:gsub('%b()', '') }
-        end,
-    })
-    vim.keymap.set('i', '<C-space>', vim.lsp.completion.get, { desc = 'trigger autocompletion' })
-end
+vim.keymap.set('n', '<leader>t', function()
+    require('neo-tree.command').execute({ action='focus', source='filesystem', position='float', toggle=true })
+end , { desc = 'file tree' })
 
-vim.lsp.config('lua_ls',{
-    on_attach = on_attach ,
-    filetypes = { 'lua' },
-    cmd = { 'lua-language-server' },
-    root_markers = {
-        ".luarc.json",
-        ".luarc.jsonc",
-        ".luacheckrc",
-        ".stylua.toml",
-        ".git",
-      },
-      settings = {
-        Lua = {
-          runtime = {
-            version = 'LuaJIT',
-          }
-        }
-      }
+-- tree-sitter magic
+treesitter.setup({
+    install_dir = vim.fs.joinpath(vim.fn.stdpath('data') --[[@as string]], 'site/'),
+    ensure_installed = { 'c', 'cpp', 'zig', 'html', 'lua'},
+    highlight = { enable = true },
+    ident = {enable = false},
 })
-
-vim.lsp.config('clangd',{
-    cmd = { 'clangd', '--background-index', '--clang-tidy' },
-    filetypes = { 'c', 'cpp' },
-    on_attach = on_attach
-})
-
-vim.lsp.config('zls', {
-    on_attach = on_attach,
-    settings = {
-        zls = {
-
-            semantic_tokens = "partial",
-            zig_lib_path = "/home/aleix/srcs/zig/lib/"
-
-        }
-    }
-})
-
-vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format, { desc = 'vim.lsp.buf.format()' })
-
---activar lsps
-vim.lsp.enable({ "lua_ls", "clangd" })
 
 -- MAN stuff
 vim.g.man_default_sects = '2,3'
@@ -144,30 +112,31 @@ vim.keymap.set('n', 'mm', function()
 end, {desc='open man on cursor'})
 
 
-
-
 --picker stuff
 vim.keymap.set('n', '<leader>gl', vim.diagnostic.open_float, { desc = 'vim.diagnostic.open_float()' })
-vim.keymap.set('n', '<leader>ff', Picker.find_files, { desc = 'find files' })
-vim.keymap.set('n', '<leader>fg', Picker.live_grep, { desc = 'live grep' })
-vim.keymap.set('n', '<leader>fb', Picker.buffers, { desc = 'pick buffers' })
-vim.keymap.set('n', '<leader>h', function()
-    Picker.help_tags({ default_split = 'vertical' }, {})
+vim.keymap.set('n', '<leader>ff', picker.find_files, { desc = 'find files' })
+vim.keymap.set('n', '<leader>fg', picker.live_grep, { desc = 'live grep' })
+vim.keymap.set('n', '<leader>fb', picker.buffers, { desc = 'pick buffers' })
+vim.keymap.set('n', '<leader>fh', function()
+    picker.help_tags({ default_split = 'vertical' }, {})
     vim.api.nvim_win_set_width(0,83);
 end, { desc = 'pick help' })
 
---file tree 
-vim.keymap.set('n', '<leader>t', function()
-    require('neo-tree.command').execute({ action='focus', source='filesystem', position='float', toggle=true })
-end , { desc = 'file tree' })
-
 -- git
-vim.keymap.set('n', '<leader>gs', function() Git.open({kind='split'}) end, { desc = 'pick buffers' })
+vim.keymap.set('n', '<leader>gs', function() git.open({kind='split'}) end, { desc = 'pick buffers' })
 vim.keymap.set('n', '<leader>gd', "<cmd>DiffviewOpen<CR>", { desc = 'pick buffers' })
 
-Catppuccin.setup()
-vim.cmd.colorscheme("catppuccin")
-vim.cmd.highlight({"Normal", "guibg=none"})
-vim.cmd.highlight({"NonText", "guibg=none"})
-vim.cmd.highlight({"Normal", "ctermbg=none"})
-vim.cmd.highlight({"NonText", "ctermbg=none"})
+
+-- harpoon
+
+harpoon:setup()
+
+vim.keymap.set("n", "<leader>hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, {desc = "harpoon"})
+vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end, {desc = "harpoon add"})
+
+vim.keymap.set("n", "<leader>hq", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<leader>hw", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<leader>he", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<leader>hr", function() harpoon:list():select(4) end)
+
+catppuccin.setup({ transparent_background = true })
